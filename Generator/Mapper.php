@@ -17,11 +17,10 @@ class Mapper {
     protected function getSnakeCase($text) {
         return ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '_$0', $text)), '_');
     }
-    
+
     protected function getDashCase($text) {
         return ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '-$0', $text)), '-');
     }
-    
 
     protected function getBundleName($entityDirectoryNamespace) {
         $entityDirectoryNamespaceArr = explode('\\', $entityDirectoryNamespace);
@@ -36,30 +35,30 @@ class Mapper {
 
     protected function readEntities($root) {
         $allMetadata = $this->manager->getMetadataFactory()->getAllMetadata();
-        
-        if (!array_key_exists('flexix_mapper', $root) ) {
+
+        if (!array_key_exists('flexix_mapper', $root)) {
             $root['flexix_mapper'] = [];
         }
-        
-        
+
+
         if (!array_key_exists('entities', $root['flexix_mapper']) || !is_array($root['flexix_mapper']['entities'])) {
             $root['flexix_mapper']['entities'] = [];
         }
-        
-        
+
+
         if (!array_key_exists('applications', $root['flexix_mapper']) || !is_array($root['flexix_mapper']['applications'])) {
             $root['flexix_mapper']['applications'] = [];
         }
-        
+
         foreach ($allMetadata as $metadata) {
-            
+
             $namespace = $this->getSnakeCase($this->getBundleName($metadata->namespace));
-            
+
             if (!array_key_exists($namespace, $root['flexix_mapper']['entities'])) {
                 $root['flexix_mapper']['entities'][$namespace] = [];
             }
-            $entityName=$this->getEntityName($metadata->name);
-            $snakeEntityName=$this->getSnakeCase($entityName);
+            $entityName = $this->getEntityName($metadata->name);
+            $snakeEntityName = $this->getSnakeCase($entityName);
             $root['flexix_mapper']['entities'][$namespace][$snakeEntityName]['alias'] = $this->getDashCase($entityName);
             $root['flexix_mapper']['entities'][$namespace][$snakeEntityName]['entity_class'] = $metadata->name;
         }
@@ -77,7 +76,12 @@ class Mapper {
     }
 
     public function updateConfigFile() {
-        $root = Yaml::parse(file_get_contents($this->filePath));
+
+        if (file_exists($this->filePath)) {
+            $root = Yaml::parse(file_get_contents($this->filePath));
+        } else {
+            $root=[];
+        }
         $entities = $this->readEntities($root);
         $yaml = Yaml::dump($entities, 5);
         file_put_contents($this->filePath, $yaml);
