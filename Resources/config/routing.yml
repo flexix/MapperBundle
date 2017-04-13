@@ -1,0 +1,3 @@
+flexix_class_mapper_homepage:
+    path:     /
+    defaults: { _controller: FlexixMapperBundle:Default:index }
