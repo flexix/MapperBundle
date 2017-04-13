@@ -77,11 +77,13 @@ class Mapper {
 
     public function updateConfigFile() {
 
-        if (file_exists($this->filePath)) {
-            $root = Yaml::parse(file_get_contents($this->filePath));
-        } else {
-            $root=[];
+        
+        $root = Yaml::parse(file_get_contents($this->filePath));
+        
+        if (!$root) {
+            $root = [];
         }
+        
         $entities = $this->readEntities($root);
         $yaml = Yaml::dump($entities, 5);
         file_put_contents($this->filePath, $yaml);
