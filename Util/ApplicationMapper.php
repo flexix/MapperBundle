@@ -16,13 +16,13 @@ class ApplicationMapper {
         $this->applications = $applications;
     }
 
-    public function getBundles($name) {
+    public function getBundles($path) {
 
-        if ($name) {
+        if ($path) {
 
             foreach ($this->applications as $application) {
 
-                if ($application["name"] == $name) {
+                if ($application["path"] == $path) {
                     return $application["bundles"];
                 }
             }
