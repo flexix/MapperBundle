@@ -1,11 +1,2 @@
 services:
-    
-    flexix_mapper.application_mapper:
-        class: Flexix\MapperBundle\Util\ApplicationMapper     
-        arguments: [%flexix_mapper.applications%]
-      
-    flexix_mapper.entity_mapper:
-        class: Flexix\MapperBundle\Util\EntityMapper
-        arguments: [%flexix_mapper.entities%]
-    
         
