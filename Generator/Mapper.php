@@ -57,10 +57,9 @@ class Mapper {
 
             $entityName = $this->getEntityName($metadata->name);
             $alias = $this->getDashCase($entityName);
-            if ($this->checkAliasExists($root['flexix_mapper']['bundles'], $alias)) {
+            if ($this->checkAliasExists($root['flexix_mapper']['bundles'], $alias,$namespace)) {
                 $alias = sprintf('%s.%s', $this->getDashCase($this->getBundleName($metadata->namespace)), $alias);
             }
-
 
             $snakeEntityName = $this->getSnakeCase($entityName);
             $root['flexix_mapper']['bundles'][$namespace][$snakeEntityName]['alias'] = $alias;
@@ -70,11 +69,11 @@ class Mapper {
         return $root;
     }
 
-    protected function checkAliasExists($bundles, $alias) {
+    protected function checkAliasExists($bundles, $alias,$namespace) {
 
         foreach ($bundles as $bundle => $entities) {
             foreach ($entities as $entity) {
-                if (array_key_exists('alias', $entity) && $entity['alias'] = $alias) {
+                if (array_key_exists('alias', $entity) && $entity['alias'] == $alias  &&  $bundle!=$namespace ) {
                     return true;
                 }
             }
