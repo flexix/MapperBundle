@@ -5,25 +5,25 @@ namespace Flexix\MapperBundle\Util;
 use Flexix\MapperBundle\Exceptions\MoreThanOneEntityClassForAliasException;
 use Flexix\MapperBundle\Exceptions\NoAliasForEntityClassException;
 use Flexix\MapperBundle\Exceptions\NoEntityClassForAliasException;
-use Flexix\MapperBundle\Exceptions\NoBundleException;
+use Flexix\MapperBundle\Util\EntityMapperInterface;
 
 /**
  * cache
  */
-class EntityMapper {
+class EntityMapper  implements EntityMapperInterface{
 
-    protected $entities;
+    protected $bundles;
 
-    public function __construct($entities) {
-        $this->entities = $entities;
+    public function __construct($bundles) {
+        $this->bundles = $bundles;
     }
 
-    public function getEntityClass($alias, $bundles) {
+    public function getEntityClass($alias) {
 
-        $this->checkNamespaceExists($bundles);
+       
         $results = [];
 
-        foreach ($bundles as $bundle) {
+        foreach ($this->bundles as $bundle) {
             $result = $this->findEntityClass($alias, $bundle);
 
             if ($result) {
@@ -36,24 +36,23 @@ class EntityMapper {
         if ($count == 0) {
             throw new NoEntityClassForAliasException(sprintf('There is no entity class for alias: "%s" configured ', $alias));
         } else if ($count > 1) {
-            throw new MoreThanOneEntityClassForAliasException(sprintf('There is more than one entityClass for alias: %s - %s', $alias, implode(',', $results)));
+            throw new MoreThanOneEntityClassForAliasException(sprintf('There is more than one entity for alias: %s - %s', $alias, implode(',', $results)));
         } else {
             return $results[0];
         }
     }
 
-    protected function findEntityClass($alias, $bundle) {
+    protected function findEntityClass($alias,$bundle) {
 
-        foreach ($this->entities[$bundle] as $map) {
+        foreach ($this->bundles[$bundle] as $map) {
             if ($map['alias'] == $alias) {
-                return $map['entity_class'];
+                return $map['entity'];
             }
         }
     }
 
-    public function getAlias($entityClass, $bundles=[]) {
+    public function getAlias($entityClass) {
 
-        $this->checkNamespaceExists($bundles);
         $results = [];
 
         foreach ($bundles as $bundle) {
@@ -75,29 +74,14 @@ class EntityMapper {
 
     protected function findAlias($entityClass, $bundle) {
 
-        foreach ($this->entities[$bundle] as $map) {
+        foreach ($this->bundles[$bundle] as $map) {
 
-            if ($map['entity_class'] == $entityClass) {
+            if ($map['entity'] == $entityClass) {
                 return $map['alias'];
             }
         }
     }
 
-    protected function checkNamespaceExists($bundles) {
 
-        if (is_array($bundles)) {
-            
-            foreach ($bundles as $bundle) {
-
-                if (!array_key_exists($bundle, $this->entities)) {
-                    throw new NoBundleException(sprintf('There is no bundle in your mapper file: %s', $bundle));
-                }
-            }
-        }
-        else
-        {
-            throw new NoBundleException(sprintf('There are no bundles associated with your application, you shoud configure "applications" section in your mapper file first'));
-        }
-    }
 
 }

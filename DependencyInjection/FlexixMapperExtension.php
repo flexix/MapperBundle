@@ -18,21 +18,15 @@ class FlexixMapperExtension extends Extension {
      * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container) {
+
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
         
-        if (!array_key_exists('entities', $config)) {
-            $config['entities'] = [];
+        if (!array_key_exists('bundles', $config)) {
+            $config['bundles'] = [];
         }
 
-        $container->setParameter('flexix_mapper.entities', $config['entities']);
-
-        if (!array_key_exists('applications', $config)) {
-            $config['applications'] = [];
-        }
-
-        $container->setParameter('flexix_mapper.applications', $config['applications']);
+        $container->setParameter('flexix_mapper.bundles', $config['bundles']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');

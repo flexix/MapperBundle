@@ -9,17 +9,19 @@ class Mapper {
     protected $filePath;
     protected $manager;
 
+    const REPLACE_MASK = '/[A-Z]([A-Z](?![a-z]))*/';
+
     public function __construct($filePath, $manager) {
         $this->filePath = $filePath;
         $this->manager = $manager;
     }
 
     protected function getSnakeCase($text) {
-        return ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '_$0', $text)), '_');
+        return ltrim(strtolower(preg_replace(self::REPLACE_MASK, '_$0', $text)), '_');
     }
 
     protected function getDashCase($text) {
-        return ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '-$0', $text)), '-');
+        return ltrim(strtolower(preg_replace(self::REPLACE_MASK, '-$0', $text)), '-');
     }
 
     protected function getBundleName($entityDirectoryNamespace) {
@@ -41,29 +43,42 @@ class Mapper {
         }
 
 
-        if (!array_key_exists('entities', $root['flexix_mapper']) || !is_array($root['flexix_mapper']['entities'])) {
-            $root['flexix_mapper']['entities'] = [];
-        }
-
-
-        if (!array_key_exists('applications', $root['flexix_mapper']) || !is_array($root['flexix_mapper']['applications'])) {
-            $root['flexix_mapper']['applications'] = [];
+        if (!array_key_exists('bundles', $root['flexix_mapper']) || !is_array($root['flexix_mapper']['bundles'])) {
+            $root['flexix_mapper']['bundles'] = [];
         }
 
         foreach ($allMetadata as $metadata) {
 
             $namespace = $this->getSnakeCase($this->getBundleName($metadata->namespace));
 
-            if (!array_key_exists($namespace, $root['flexix_mapper']['entities'])) {
-                $root['flexix_mapper']['entities'][$namespace] = [];
+            if (!array_key_exists($namespace, $root['flexix_mapper']['bundles'])) {
+                $root['flexix_mapper']['bundles'][$namespace] = [];
             }
+
             $entityName = $this->getEntityName($metadata->name);
+            $alias = $this->getDashCase($entityName);
+            if ($this->checkAliasExists($root['flexix_mapper']['bundles'], $alias)) {
+                $alias = sprintf('%s.%s', $this->getDashCase($this->getBundleName($metadata->namespace)), $alias);
+            }
+
+
             $snakeEntityName = $this->getSnakeCase($entityName);
-            $root['flexix_mapper']['entities'][$namespace][$snakeEntityName]['alias'] = $this->getDashCase($entityName);
-            $root['flexix_mapper']['entities'][$namespace][$snakeEntityName]['entity_class'] = $metadata->name;
+            $root['flexix_mapper']['bundles'][$namespace][$snakeEntityName]['alias'] = $alias;
+            $root['flexix_mapper']['bundles'][$namespace][$snakeEntityName]['entity'] = $metadata->name;
         }
         $this->recursiveSort($root);
         return $root;
+    }
+
+    protected function checkAliasExists($bundles, $alias) {
+
+        foreach ($bundles as $bundle => $entities) {
+            foreach ($entities as $entity) {
+                if (array_key_exists('alias', $entity) && $entity['alias'] = $alias) {
+                    return true;
+                }
+            }
+        }
     }
 
     protected function recursiveSort(&$array) {
@@ -77,15 +92,15 @@ class Mapper {
 
     public function updateConfigFile() {
 
-        
+
         $root = Yaml::parse(file_get_contents($this->filePath));
-        
+
         if (!$root) {
             $root = [];
         }
-        
-        $entities = $this->readEntities($root);
-        $yaml = Yaml::dump($entities, 5);
+
+        $bundles = $this->readEntities($root);
+        $yaml = Yaml::dump($bundles, 5);
         file_put_contents($this->filePath, $yaml);
     }
 

@@ -28,7 +28,7 @@ class EntityMapperTest extends TestCase {
     public function testGetEntityClass() {
         
         $mapperConfiguration = Yaml::parse(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testMapper.yml'));
-        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['entities']);
+        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['bundles']);
         $entityClass = $applicationMapper->getEntityClass(self::_ALIAS, [self::_BUNDLE_NAME]);
         $this->assertEquals(self::_ENTITY_CLASS, $entityClass);
     }
@@ -39,7 +39,7 @@ class EntityMapperTest extends TestCase {
     public function testGetEntityClass_MoreThanOneEntityClassForAliasException() {
         
         $mapperConfiguration = Yaml::parse(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testMapper.yml'));
-        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['entities']);
+        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['bundles']);
         $applicationMapper->getEntityClass(self::_ALIAS, [self::_BUNDLE_NAME, self::_CONFLICTED_BUNDLE_NAME]);
     }
 
@@ -49,7 +49,7 @@ class EntityMapperTest extends TestCase {
     public function testGetEntityClass_NoEntityClassForAliasException() {
        
         $mapperConfiguration = Yaml::parse(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testMapper.yml'));
-        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['entities']);
+        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['bundles']);
         $applicationMapper->getEntityClass(self::_NOT_EXISTED_ALIAS, [self::_BUNDLE_NAME, self::_CONFLICTED_BUNDLE_NAME]);
     }
     
@@ -60,7 +60,7 @@ class EntityMapperTest extends TestCase {
     public function testGetEntityClass_NoBundleException() {
        
         $mapperConfiguration = Yaml::parse(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testMapper.yml'));
-        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['entities']);
+        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['bundles']);
         $applicationMapper->getEntityClass(self::_NOT_EXISTED_ALIAS, [self::_BUNDLE_NAME, self::_CONFLICTED_BUNDLE_NAME, self::_NOT_EXISTED_BUNDLE_NAME]);
     }
     
@@ -68,7 +68,7 @@ class EntityMapperTest extends TestCase {
     public function testGetAlias() {
        
         $mapperConfiguration = Yaml::parse(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testMapper.yml'));
-        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['entities']);
+        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['bundles']);
         $entityClass = $applicationMapper->getAlias(self::_ENTITY_CLASS, [self::_BUNDLE_NAME]);
         $this->assertEquals(self::_ALIAS, $entityClass);
     }
@@ -79,7 +79,7 @@ class EntityMapperTest extends TestCase {
     public function testGetAlias_Excepiton() {
         
         $mapperConfiguration = Yaml::parse(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testMapper.yml'));
-        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['entities']);
+        $applicationMapper = new EntityMapper($mapperConfiguration['flexix_mapper']['bundles']);
         $applicationMapper->getAlias(self::_NOT_EXISTED_ENTITY_CLASS, [self::_BUNDLE_NAME, self::_CONFLICTED_BUNDLE_NAME]);
     }
 
