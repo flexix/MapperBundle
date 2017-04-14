@@ -17,16 +17,14 @@ class Configuration implements ConfigurationInterface {
         $rootNode = $treeBuilder->root('flexix_mapper');
          $rootNode
         ->children()
-            ->variableNode('applications')->defaultValue(array())
-            ->end()     
-            ->arrayNode('entities')->defaultValue(array())
+            ->arrayNode('bundles')->defaultValue(array())
                 ->useAttributeAsKey('name')
                 ->prototype('array')
                     ->useAttributeAsKey('name')
                         ->prototype('array')
                         ->children()
                             ->scalarNode('alias')->end()
-                            ->scalarNode('entity_class')->end()
+                            ->scalarNode('class')->end()
                     ->end()
                 ->end()
             ->end()
