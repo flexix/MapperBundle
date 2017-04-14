@@ -46,7 +46,7 @@ class EntityMapper  implements EntityMapperInterface{
 
         foreach ($this->bundles[$bundle] as $map) {
             if ($map['alias'] == $alias) {
-                return $map['entity'];
+                return $map['class'];
             }
         }
     }
@@ -76,7 +76,7 @@ class EntityMapper  implements EntityMapperInterface{
 
         foreach ($this->bundles[$bundle] as $map) {
 
-            if ($map['entity'] == $entityClass) {
+            if ($map['class'] == $entityClass) {
                 return $map['alias'];
             }
         }

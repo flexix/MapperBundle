@@ -63,7 +63,7 @@ class Mapper {
 
             $snakeEntityName = $this->getSnakeCase($entityName);
             $root['flexix_mapper']['bundles'][$namespace][$snakeEntityName]['alias'] = $alias;
-            $root['flexix_mapper']['bundles'][$namespace][$snakeEntityName]['entity'] = $metadata->name;
+            $root['flexix_mapper']['bundles'][$namespace][$snakeEntityName]['class'] = $metadata->name;
         }
         $this->recursiveSort($root);
         return $root;
