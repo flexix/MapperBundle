@@ -82,6 +82,13 @@ class EntityMapper  implements EntityMapperInterface{
             }
         }
     }
+    
+    
+    public function getBundles() {
+
+        return $this->bundles;
+        
+    }
 
 
 

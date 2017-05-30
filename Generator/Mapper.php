@@ -16,6 +16,8 @@ class Mapper {
         $this->manager = $manager;
     }
 
+     
+    
     protected function getSnakeCase($text) {
         return ltrim(strtolower(preg_replace(self::REPLACE_MASK, '_$0', $text)), '_');
     }
