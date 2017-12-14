@@ -56,8 +56,8 @@ class EntityMapper  implements EntityMapperInterface{
 
         $results = [];
 
-        foreach ($bundles as $bundle) {
-            $result = $this->findAlias($entityClass, $bundle);
+        foreach ($this->bundles as $name=>$bundle) {
+            $result = $this->findAlias($entityClass, $name);
 
             if ($result) {
                 $results[] = $result;
